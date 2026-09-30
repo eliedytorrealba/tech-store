@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "nombre": "Notebook Lenovo IdeaPad",
+    "descripcion": "Notebook para estudio, trabajo y uso diario.",
+    "precio": 899999,
+    "stock": 8,
+    "categoria": "notebooks",
+    "imagen": "https://placehold.co/400x300?text=Notebook+Lenovo"
+  },
+  {
+    "id": 2,
+    "nombre": "Samsung Galaxy S25",
+    "descripcion": "Smartphone Samsung con excelente rendimiento y cámara.",
+    "precio": 1099999,
+    "stock": 10,
+    "categoria": "celulares",
+    "imagen": "https://placehold.co/400x300?text=Samsung+Galaxy"
+  },
+  {
+    "id": 3,
+    "nombre": "Auriculares Bluetooth",
+    "descripcion": "Auriculares inalámbricos con sonido estéreo.",
+    "precio": 89999,
+    "stock": 15,
+    "categoria": "audio",
+    "imagen": "https://placehold.co/400x300?text=Auriculares"
+  },
+  {
+    "id": 4,
+    "nombre": "PlayStation 5",
+    "descripcion": "Consola PlayStation 5 para disfrutar juegos de última generación.",
+    "precio": 1199999,
+    "stock": 5,
+    "categoria": "consolas",
+    "imagen": "https://placehold.co/400x300?text=PlayStation+5"
+  },
+  {
+    "id": 5,
+    "nombre": "Mouse Logitech",
+    "descripcion": "Mouse inalámbrico cómodo y preciso.",
+    "precio": 45999,
+    "stock": 20,
+    "categoria": "accesorios",
+    "imagen": "https://placehold.co/400x300?text=Mouse+Logitech"
+  },
+  {
+    "id": 6,
+    "nombre": "Monitor Samsung 24 pulgadas",
+    "descripcion": "Monitor Full HD ideal para trabajo, estudio y entretenimiento.",
+    "precio": 289999,
+    "stock": 7,
+    "categoria": "monitores",
+    "imagen": "https://placehold.co/400x300?text=Monitor+Samsung"
+  }
+]
