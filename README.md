@@ -1,16 +1,75 @@
-# React + Vite
+# Tech Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Proyecto de e-commerce desarrollado con React JS como parte de la pre-entrega del curso.
 
-Currently, two official plugins are available:
+Tech Store es una tienda de tecnología que permite visualizar un catálogo de productos, acceder al detalle de cada producto y agregar productos a un carrito de compras.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+- Catálogo de productos.
+- Carga de productos desde un archivo JSON local utilizando `fetch` y `useEffect`.
+- Componentes reutilizables para mostrar los productos.
+- Vista de detalle de cada producto.
+- Selector de cantidad según el stock disponible.
+- Carrito de compras utilizando Context API.
+- Contador de productos en el carrito actualizado en tiempo real.
+- Eliminación de productos del carrito.
+- Opción para vaciar completamente el carrito.
+- Cálculo del total de la compra.
+- Navegación mediante React Router DOM.
+- Diseño responsive para diferentes tamaños de pantalla.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Rutas
 
-## Expanding the ESLint configuration
+La aplicación cuenta con las siguientes rutas:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `/` - Página de inicio.
+- `/productos` - Catálogo de productos.
+- `/producto/:id` - Detalle de un producto.
+- `/carrito` - Carrito de compras.
+
+## Tecnologías utilizadas
+
+- React JS
+- Vite
+- React Router DOM
+- Context API
+- JavaScript
+- HTML
+- CSS
+
+## Instalación
+
+Para ejecutar el proyecto localmente:
+
+1. Clonar el repositorio:
+
+```bash
+git clone https://github.com/eliedytorrealba/tech-store.git
+```
+
+2. Ingresar a la carpeta del proyecto:
+
+```bash
+cd tech-store
+```
+
+3. Instalar las dependencias:
+
+```bash
+npm install
+```
+
+4. Iniciar el servidor de desarrollo:
+
+```bash
+npm run dev
+```
+
+5. Abrir en el navegador la dirección indicada por Vite en la terminal.
+
+## Autor
+
+**Eliedy Torrealba**
+
+Proyecto realizado para el curso de React JS.
