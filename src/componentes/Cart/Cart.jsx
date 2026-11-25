@@ -1,5 +1,6 @@
+
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { CartContext } from '../../context/CartContext'
 
 function Cart() {
@@ -7,8 +8,27 @@ function Cart() {
     carrito,
     eliminarDelCarrito,
     vaciarCarrito,
+    cantidadTotal,
     precioTotal
   } = useContext(CartContext)
+
+  const navigate = useNavigate()
+
+  const finalizarCompra = () => {
+    if (carrito.length === 0) {
+      return
+    }
+
+    alert(
+      `¡Compra realizada con éxito!\n\n` +
+      `Productos: ${cantidadTotal}\n` +
+      `Total: $${precioTotal.toLocaleString('es-AR')}\n\n` +
+      `¡Gracias por comprar en Tech Store!`
+    )
+
+    vaciarCarrito()
+    navigate('/')
+  }
 
   if (carrito.length === 0) {
     return (
@@ -84,6 +104,7 @@ function Cart() {
                 </p>
 
                 <button
+                  type="button"
                   className="eliminar-producto"
                   onClick={() =>
                     eliminarDelCarrito(item.id)
@@ -102,13 +123,7 @@ function Cart() {
           <div className="resumen-linea">
             <span>Productos</span>
 
-            <span>
-              {carrito.reduce(
-                (total, item) =>
-                  total + item.cantidad,
-                0
-              )}
-            </span>
+            <span>{cantidadTotal}</span>
           </div>
 
           <div className="resumen-total">
@@ -120,6 +135,15 @@ function Cart() {
           </div>
 
           <button
+            type="button"
+            className="finalizar-compra"
+            onClick={finalizarCompra}
+          >
+            Finalizar compra
+          </button>
+
+          <button
+            type="button"
             className="vaciar-carrito"
             onClick={vaciarCarrito}
           >

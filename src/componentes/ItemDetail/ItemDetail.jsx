@@ -4,7 +4,14 @@ import { CartContext } from '../../context/CartContext'
 import ItemCount from '../ItemCount/ItemCount'
 
 function ItemDetail({ producto }) {
-  const { addToCart } = useContext(CartContext)
+  const { addToCart, getCantidadActual } = useContext(CartContext)
+
+  const cantidadEnCarrito = getCantidadActual(producto.id)
+
+  const stockDisponible = Math.max(
+    0,
+    producto.stock - cantidadEnCarrito
+  )
 
   const manejarAgregar = (cantidad) => {
     addToCart(producto, cantidad)
@@ -44,11 +51,18 @@ function ItemDetail({ producto }) {
           </p>
 
           <p className="detalle-stock">
-            Stock disponible: {producto.stock}
+            Stock disponible: {stockDisponible}
           </p>
 
+          {cantidadEnCarrito > 0 && (
+            <p className="detalle-stock">
+              Unidades en tu carrito: {cantidadEnCarrito}
+            </p>
+          )}
+
           <ItemCount
-            stock={producto.stock}
+            key={producto.id}
+            stock={stockDisponible}
             inicial={1}
             onAdd={manejarAgregar}
           />

@@ -1,52 +1,62 @@
+
 import { useState } from 'react'
 import { CartContext } from './CartContext'
 
 function CartProvider({ children }) {
   const [carrito, setCarrito] = useState([])
 
+  const getCantidadActual = (id) => {
+    const producto = carrito.find((item) => item.id === id)
+    return producto ? producto.cantidad : 0
+  }
+
   const addToCart = (producto, cantidad) => {
-    const productoEnCarrito = carrito.find(
-      (item) => item.id === producto.id
-    )
+    if (!Number.isInteger(cantidad) || cantidad <= 0) {
+      alert('La cantidad seleccionada no es válida.')
+      return
+    }
 
-    if (productoEnCarrito) {
-      const nuevaCantidad =
-        productoEnCarrito.cantidad + cantidad
+    const cantidadActual = getCantidadActual(producto.id)
 
-      if (nuevaCantidad > producto.stock) {
-        alert('No hay suficiente stock disponible.')
-        return
-      }
+    if (cantidadActual + cantidad > producto.stock) {
+      alert('No hay suficiente stock disponible.')
+      return
+    }
 
-      const carritoActualizado = carrito.map((item) =>
-        item.id === producto.id
-          ? { ...item, cantidad: nuevaCantidad }
-          : item
+    setCarrito((carritoAnterior) => {
+      const productoEnCarrito = carritoAnterior.find(
+        (item) => item.id === producto.id
       )
 
-      setCarrito(carritoActualizado)
-    } else {
-      if (cantidad > producto.stock) {
-        alert('No hay suficiente stock disponible.')
-        return
+      const nuevaCantidad =
+        (productoEnCarrito?.cantidad || 0) + cantidad
+
+      if (nuevaCantidad > producto.stock) {
+        return carritoAnterior
       }
 
-      setCarrito([
-        ...carrito,
+      if (productoEnCarrito) {
+        return carritoAnterior.map((item) =>
+          item.id === producto.id
+            ? { ...item, cantidad: nuevaCantidad }
+            : item
+        )
+      }
+
+      return [
+        ...carritoAnterior,
         {
           ...producto,
-          cantidad: cantidad
+          cantidad
         }
-      ])
-    }
+      ]
+    })
   }
 
   const eliminarDelCarrito = (id) => {
-    const carritoActualizado = carrito.filter(
-      (item) => item.id !== id
+    setCarrito((carritoAnterior) =>
+      carritoAnterior.filter((item) => item.id !== id)
     )
-
-    setCarrito(carritoActualizado)
   }
 
   const vaciarCarrito = () => {
@@ -68,6 +78,7 @@ function CartProvider({ children }) {
       value={{
         carrito,
         addToCart,
+        getCantidadActual,
         eliminarDelCarrito,
         vaciarCarrito,
         cantidadTotal,
