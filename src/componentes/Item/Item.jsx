@@ -15,6 +15,8 @@ function Item({
           className="producto-imagen"
           src={imagen}
           alt={nombre}
+          loading="lazy"
+          decoding="async"
         />
       </div>
 

@@ -1,9 +1,34 @@
 import './App.css'
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
 import Layout from './componentes/Layout/Layout'
-import ItemListContainer from './componentes/ItemListContainer/ItemListContainer'
-import ItemDetailContainer from './componentes/ItemDetailContainer/ItemDetailContainer'
-import Cart from './componentes/Cart/Cart'
+
+const ItemListContainer = lazy(() =>
+  import('./componentes/ItemListContainer/ItemListContainer')
+)
+
+const ItemDetailContainer = lazy(() =>
+  import('./componentes/ItemDetailContainer/ItemDetailContainer')
+)
+
+const Cart = lazy(() =>
+  import('./componentes/Cart/Cart')
+)
+
+function CargandoPagina() {
+  return (
+    <section
+      role="status"
+      aria-live="polite"
+      style={{
+        textAlign: 'center',
+        padding: '60px 20px'
+      }}
+    >
+      <p>Cargando página...</p>
+    </section>
+  )
+}
 
 function App() {
   return (
@@ -54,17 +79,29 @@ function App() {
 
         <Route
           path="/productos"
-          element={<ItemListContainer />}
+          element={
+            <Suspense fallback={<CargandoPagina />}>
+              <ItemListContainer />
+            </Suspense>
+          }
         />
 
         <Route
           path="/producto/:id"
-          element={<ItemDetailContainer />}
+          element={
+            <Suspense fallback={<CargandoPagina />}>
+              <ItemDetailContainer />
+            </Suspense>
+          }
         />
 
         <Route
           path="/carrito"
-          element={<Cart />}
+          element={
+            <Suspense fallback={<CargandoPagina />}>
+              <Cart />
+            </Suspense>
+          }
         />
       </Route>
     </Routes>

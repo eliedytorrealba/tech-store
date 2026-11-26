@@ -1,34 +1,90 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../../config/firebase'
 import ItemDetail from '../ItemDetail/ItemDetail'
 
 function ItemDetailContainer() {
-  const [producto, setProducto] = useState(null)
-
   const { id } = useParams()
 
-  useEffect(() => {
-    fetch('/productos.json')
-      .then((respuesta) => respuesta.json())
-      .then((datos) => {
-        const productoEncontrado = datos.find(
-          (producto) => producto.id === Number(id)
-        )
+  const [resultado, setResultado] = useState(null)
 
-        setProducto(productoEncontrado)
-      })
-      .catch((error) => {
+  useEffect(() => {
+    let activo = true
+
+    const cargarProducto = async () => {
+      try {
+        const productoRef = doc(db, 'productos', id)
+        const snapshot = await getDoc(productoRef)
+
+        if (!activo) return
+
+        if (snapshot.exists()) {
+          setResultado({
+            id,
+            producto: {
+              ...snapshot.data(),
+              id: snapshot.id,
+            },
+            error: null,
+          })
+        } else {
+          setResultado({
+            id,
+            producto: null,
+            error: null,
+          })
+        }
+      } catch (error) {
         console.error('Error al cargar el producto:', error)
-      })
+
+        if (activo) {
+          setResultado({
+            id,
+            producto: null,
+            error: 'No se pudo cargar el producto. Intenta nuevamente.',
+          })
+        }
+      }
+    }
+
+    cargarProducto()
+
+    return () => {
+      activo = false
+    }
   }, [id])
 
-  if (!producto) {
-    return <p>Cargando producto...</p>
+  if (!resultado || resultado.id !== id) {
+    return (
+      <section className="app">
+        <p role="status">Cargando producto...</p>
+      </section>
+    )
+  }
+
+  if (resultado.error) {
+    return (
+      <section className="app">
+        <p role="alert">{resultado.error}</p>
+        <Link to="/productos">Volver a productos</Link>
+      </section>
+    )
+  }
+
+  if (!resultado.producto) {
+    return (
+      <section className="app">
+        <h2>Producto no encontrado</h2>
+        <p>El producto solicitado no está disponible.</p>
+        <Link to="/productos">Volver a productos</Link>
+      </section>
+    )
   }
 
   return (
     <section className="app">
-      <ItemDetail producto={producto} />
+      <ItemDetail producto={resultado.producto} />
     </section>
   )
 }
