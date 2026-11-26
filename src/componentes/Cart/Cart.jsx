@@ -1,7 +1,8 @@
-
 import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+
 import { CartContext } from '../../context/CartContext'
+import { AuthContext } from '../../context/AuthContext'
 
 function Cart() {
   const {
@@ -12,15 +13,29 @@ function Cart() {
     precioTotal
   } = useContext(CartContext)
 
+  const {
+    autenticado,
+    cargando,
+    errorSesion
+  } = useContext(AuthContext)
+
   const navigate = useNavigate()
 
   const finalizarCompra = () => {
-    if (carrito.length === 0) {
+    if (carrito.length === 0 || cargando) {
+      return
+    }
+
+    if (!autenticado) {
+      navigate('/login', {
+        state: { from: '/carrito' }
+      })
+
       return
     }
 
     alert(
-      `¡Compra realizada con éxito!\n\n` +
+      `¡Compra simulada realizada con éxito!\n\n` +
       `Productos: ${cantidadTotal}\n` +
       `Total: $${precioTotal.toLocaleString('es-AR')}\n\n` +
       `¡Gracias por comprar en Tech Store!`
@@ -134,12 +149,30 @@ function Cart() {
             </span>
           </div>
 
+          {!autenticado && !cargando && (
+            <p className="carrito-aviso-auth">
+              Inicia sesión para finalizar tu compra.
+              Tus productos permanecerán en el carrito.
+            </p>
+          )}
+
+          {errorSesion && (
+            <p className="auth-error" role="alert">
+              {errorSesion}
+            </p>
+          )}
+
           <button
             type="button"
             className="finalizar-compra"
             onClick={finalizarCompra}
+            disabled={cargando}
           >
-            Finalizar compra
+            {cargando
+              ? 'Verificando sesión...'
+              : autenticado
+                ? 'Finalizar compra'
+                : 'Iniciar sesión para comprar'}
           </button>
 
           <button
