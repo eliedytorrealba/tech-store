@@ -30,6 +30,10 @@ const Perfil = lazy(() =>
   import('./componentes/Perfil/Perfil')
 )
 
+const GestionProductos = lazy(() =>
+  import('./componentes/GestionProductos/GestionProductos')
+)
+
 function App() {
   return (
     <Suspense
@@ -128,20 +132,7 @@ function App() {
           >
             <Route
               path="/gestion"
-              element={
-                <section className="auth-estado">
-                  <h2>Gestión de productos</h2>
-
-                  <p>
-                    Bienvenido al panel de administración.
-                  </p>
-
-                  <p>
-                    Próximamente podrás administrar
-                    los productos de Tech Store.
-                  </p>
-                </section>
-              }
+              element={<GestionProductos />}
             />
           </Route>
 
