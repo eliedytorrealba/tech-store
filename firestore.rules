@@ -1,0 +1,98 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autenticado() {
+      return request.auth != null;
+    }
+
+    function esAdmin() {
+      return autenticado()
+        && exists(
+          /databases/$(database)/documents/usuarios/$(request.auth.uid)
+        )
+        && get(
+          /databases/$(database)/documents/usuarios/$(request.auth.uid)
+        ).data.rol == 'admin';
+    }
+
+    function productoValido() {
+      let datos = request.resource.data;
+
+      return datos.keys().hasAll([
+        'nombre',
+        'descripcion',
+        'precio',
+        'stock',
+        'categoria',
+        'imagen'
+      ])
+      && datos.keys().hasOnly([
+        'nombre',
+        'descripcion',
+        'precio',
+        'stock',
+        'categoria',
+        'imagen'
+      ])
+      && datos.nombre is string
+      && datos.nombre.size() > 0
+      && datos.nombre.size() <= 150
+      && datos.descripcion is string
+      && datos.descripcion.size() > 0
+      && datos.descripcion.size() <= 1000
+      && datos.precio is number
+      && datos.precio > 0
+      && datos.stock is int
+      && datos.stock >= 0
+      && datos.categoria is string
+      && datos.categoria.size() > 0
+      && datos.categoria.size() <= 80
+      && datos.imagen is string
+      && datos.imagen.size() > 0
+      && datos.imagen.size() <= 2048;
+    }
+
+    match /productos/{productoId} {
+      allow read: if true;
+
+      allow create, update:
+        if esAdmin() && productoValido();
+
+      allow delete: if esAdmin();
+    }
+
+    match /usuarios/{usuarioId} {
+      allow get:
+        if autenticado()
+        && request.auth.uid == usuarioId;
+
+      allow create:
+        if autenticado()
+        && request.auth.uid == usuarioId
+        && request.resource.data.keys().hasAll([
+          'nombre',
+          'email',
+          'rol'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'nombre',
+          'email',
+          'rol'
+        ])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() > 0
+        && request.resource.data.nombre.size() <= 100
+        && request.resource.data.email is string
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.rol == 'cliente';
+
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

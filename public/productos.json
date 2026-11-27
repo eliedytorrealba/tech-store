@@ -6,7 +6,7 @@
     "precio": 899999,
     "stock": 8,
     "categoria": "notebooks",
-    "imagen": "https://placehold.co/400x300?text=Notebook+Lenovo"
+    "imagen": "/imagenes/notebook-lenovo.webp"
   },
   {
     "id": 2,
@@ -15,7 +15,7 @@
     "precio": 1099999,
     "stock": 10,
     "categoria": "celulares",
-    "imagen": "https://placehold.co/400x300?text=Samsung+Galaxy"
+    "imagen": "/imagenes/samsung-galaxy-s25.webp"
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@
     "precio": 89999,
     "stock": 15,
     "categoria": "audio",
-    "imagen": "https://placehold.co/400x300?text=Auriculares"
+    "imagen": "/imagenes/auriculares-bluetooth.webp"
   },
   {
     "id": 4,
@@ -33,7 +33,7 @@
     "precio": 1199999,
     "stock": 5,
     "categoria": "consolas",
-    "imagen": "https://placehold.co/400x300?text=PlayStation+5"
+    "imagen": "/imagenes/playstation-5.webp"
   },
   {
     "id": 5,
@@ -42,7 +42,7 @@
     "precio": 45999,
     "stock": 20,
     "categoria": "accesorios",
-    "imagen": "https://placehold.co/400x300?text=Mouse+Logitech"
+    "imagen": "/imagenes/mouse-logitech.webp"
   },
   {
     "id": 6,
@@ -51,6 +51,6 @@
     "precio": 289999,
     "stock": 7,
     "categoria": "monitores",
-    "imagen": "https://placehold.co/400x300?text=Monitor+Samsung"
+    "imagen": "/imagenes/monitor-samsung.webp"
   }
 ]

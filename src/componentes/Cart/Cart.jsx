@@ -1,14 +1,47 @@
+import { toast } from 'react-toastify'
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+
 import { CartContext } from '../../context/CartContext'
+import { AuthContext } from '../../context/AuthContext'
 
 function Cart() {
   const {
     carrito,
     eliminarDelCarrito,
     vaciarCarrito,
+    cantidadTotal,
     precioTotal
   } = useContext(CartContext)
+
+  const {
+    autenticado,
+    cargando,
+    errorSesion
+  } = useContext(AuthContext)
+
+  const navigate = useNavigate()
+
+  const finalizarCompra = () => {
+    if (carrito.length === 0 || cargando) {
+      return
+    }
+
+    if (!autenticado) {
+      navigate('/login', {
+        state: { from: '/carrito' }
+      })
+
+      return
+    }
+
+    toast.success(
+      `¡Compra simulada realizada con éxito! ${cantidadTotal} productos. Total: $${precioTotal.toLocaleString('es-AR')}`
+    )
+
+    vaciarCarrito(false)
+    navigate('/')
+  }
 
   if (carrito.length === 0) {
     return (
@@ -84,6 +117,7 @@ function Cart() {
                 </p>
 
                 <button
+                  type="button"
                   className="eliminar-producto"
                   onClick={() =>
                     eliminarDelCarrito(item.id)
@@ -102,13 +136,7 @@ function Cart() {
           <div className="resumen-linea">
             <span>Productos</span>
 
-            <span>
-              {carrito.reduce(
-                (total, item) =>
-                  total + item.cantidad,
-                0
-              )}
-            </span>
+            <span>{cantidadTotal}</span>
           </div>
 
           <div className="resumen-total">
@@ -119,9 +147,36 @@ function Cart() {
             </span>
           </div>
 
+          {!autenticado && !cargando && (
+            <p className="carrito-aviso-auth">
+              Inicia sesión para finalizar tu compra.
+              Tus productos permanecerán en el carrito.
+            </p>
+          )}
+
+          {errorSesion && (
+            <p className="auth-error" role="alert">
+              {errorSesion}
+            </p>
+          )}
+
           <button
+            type="button"
+            className="finalizar-compra"
+            onClick={finalizarCompra}
+            disabled={cargando}
+          >
+            {cargando
+              ? 'Verificando sesión...'
+              : autenticado
+                ? 'Finalizar compra'
+                : 'Iniciar sesión para comprar'}
+          </button>
+
+          <button
+            type="button"
             className="vaciar-carrito"
-            onClick={vaciarCarrito}
+            onClick={() => vaciarCarrito()}
           >
             Vaciar carrito
           </button>

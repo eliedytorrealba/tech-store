@@ -1,56 +1,165 @@
-import { useState } from 'react'
+import { toast } from 'react-toastify'
+import { useEffect, useState } from 'react'
 import { CartContext } from './CartContext'
 
+const CART_STORAGE_KEY = 'tech-store-carrito'
+
+const IMAGENES_MIGRADAS = {
+  '/imagenes/auriculares-bluetooth.png':
+    '/imagenes/auriculares-bluetooth.webp',
+
+  '/imagenes/monitor-samsung.png':
+    '/imagenes/monitor-samsung.webp',
+
+  '/imagenes/mouse-logitech.png':
+    '/imagenes/mouse-logitech.webp',
+
+  '/imagenes/notebook-lenovo.png':
+    '/imagenes/notebook-lenovo.webp',
+
+  '/imagenes/playstation-5.png':
+    '/imagenes/playstation-5.webp',
+
+  '/imagenes/samsung-galaxy-s25.png':
+    '/imagenes/samsung-galaxy-s25.webp'
+}
+
+function migrarImagen(imagen) {
+  if (
+    typeof imagen === 'string' &&
+    Object.hasOwn(IMAGENES_MIGRADAS, imagen)
+  ) {
+    return IMAGENES_MIGRADAS[imagen]
+  }
+
+  return imagen
+}
+
+function recuperarCarrito() {
+  try {
+    const carritoGuardado = localStorage.getItem(CART_STORAGE_KEY)
+
+    if (!carritoGuardado) {
+      return []
+    }
+
+    const datos = JSON.parse(carritoGuardado)
+
+    if (!Array.isArray(datos)) {
+      return []
+    }
+
+    return datos
+      .filter(
+        (item) =>
+          item &&
+          typeof item.id === 'string' &&
+          typeof item.nombre === 'string' &&
+          Number.isFinite(item.precio) &&
+          item.precio >= 0 &&
+          Number.isInteger(item.stock) &&
+          Number.isInteger(item.cantidad) &&
+          item.cantidad > 0 &&
+          item.cantidad <= item.stock
+      )
+      .map((item) => ({
+        ...item,
+        imagen: migrarImagen(item.imagen)
+      }))
+  } catch (error) {
+    console.error('Error al recuperar el carrito:', error)
+    return []
+  }
+}
+
 function CartProvider({ children }) {
-  const [carrito, setCarrito] = useState([])
+  const [carrito, setCarrito] = useState(recuperarCarrito)
+
+  useEffect(() => {
+    try {
+      if (carrito.length === 0) {
+        localStorage.removeItem(CART_STORAGE_KEY)
+      } else {
+        localStorage.setItem(
+          CART_STORAGE_KEY,
+          JSON.stringify(carrito)
+        )
+      }
+    } catch (error) {
+      console.error('Error al guardar el carrito:', error)
+    }
+  }, [carrito])
+
+  const getCantidadActual = (id) => {
+    const producto = carrito.find((item) => item.id === id)
+    return producto ? producto.cantidad : 0
+  }
 
   const addToCart = (producto, cantidad) => {
-    const productoEnCarrito = carrito.find(
-      (item) => item.id === producto.id
-    )
+    if (!Number.isInteger(cantidad) || cantidad <= 0) {
+      toast.error('La cantidad seleccionada no es válida.')
+      return
+    }
 
-    if (productoEnCarrito) {
-      const nuevaCantidad =
-        productoEnCarrito.cantidad + cantidad
+    const cantidadActual = getCantidadActual(producto.id)
 
-      if (nuevaCantidad > producto.stock) {
-        alert('No hay suficiente stock disponible.')
-        return
-      }
+    if (cantidadActual + cantidad > producto.stock) {
+      toast.error('No hay suficiente stock disponible.')
+      return
+    }
 
-      const carritoActualizado = carrito.map((item) =>
-        item.id === producto.id
-          ? { ...item, cantidad: nuevaCantidad }
-          : item
+    const productoActualizado = {
+      ...producto,
+      imagen: migrarImagen(producto.imagen)
+    }
+
+    setCarrito((carritoAnterior) => {
+      const productoEnCarrito = carritoAnterior.find(
+        (item) => item.id === producto.id
       )
 
-      setCarrito(carritoActualizado)
-    } else {
-      if (cantidad > producto.stock) {
-        alert('No hay suficiente stock disponible.')
-        return
+      const nuevaCantidad =
+        (productoEnCarrito?.cantidad || 0) + cantidad
+
+      if (nuevaCantidad > producto.stock) {
+        return carritoAnterior
       }
 
-      setCarrito([
-        ...carrito,
+      if (productoEnCarrito) {
+        return carritoAnterior.map((item) =>
+          item.id === producto.id
+            ? {
+                ...item,
+                ...productoActualizado,
+                cantidad: nuevaCantidad
+              }
+            : item
+        )
+      }
+
+      return [
+        ...carritoAnterior,
         {
-          ...producto,
-          cantidad: cantidad
+          ...productoActualizado,
+          cantidad
         }
-      ])
-    }
+      ]
+    })
+    toast.success(`${producto.nombre} agregado al carrito.`)
   }
 
   const eliminarDelCarrito = (id) => {
-    const carritoActualizado = carrito.filter(
-      (item) => item.id !== id
+    if (!carrito.some((item) => item.id === id)) return
+    toast.info('Producto eliminado del carrito.')
+    setCarrito((carritoAnterior) =>
+      carritoAnterior.filter((item) => item.id !== id)
     )
-
-    setCarrito(carritoActualizado)
   }
 
-  const vaciarCarrito = () => {
+  const vaciarCarrito = (notificar = true) => {
+    if (carrito.length === 0) return
     setCarrito([])
+    if (notificar) toast.info('Carrito vaciado correctamente.')
   }
 
   const cantidadTotal = carrito.reduce(
@@ -68,6 +177,7 @@ function CartProvider({ children }) {
       value={{
         carrito,
         addToCart,
+        getCantidadActual,
         eliminarDelCarrito,
         vaciarCarrito,
         cantidadTotal,
