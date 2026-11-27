@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -34,14 +35,11 @@ function Cart() {
       return
     }
 
-    alert(
-      `¡Compra simulada realizada con éxito!\n\n` +
-      `Productos: ${cantidadTotal}\n` +
-      `Total: $${precioTotal.toLocaleString('es-AR')}\n\n` +
-      `¡Gracias por comprar en Tech Store!`
+    toast.success(
+      `¡Compra simulada realizada con éxito! ${cantidadTotal} productos. Total: $${precioTotal.toLocaleString('es-AR')}`
     )
 
-    vaciarCarrito()
+    vaciarCarrito(false)
     navigate('/')
   }
 
@@ -178,7 +176,7 @@ function Cart() {
           <button
             type="button"
             className="vaciar-carrito"
-            onClick={vaciarCarrito}
+            onClick={() => vaciarCarrito()}
           >
             Vaciar carrito
           </button>

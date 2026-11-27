@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { useEffect, useState } from 'react'
 import { CartContext } from './CartContext'
 
@@ -96,14 +97,14 @@ function CartProvider({ children }) {
 
   const addToCart = (producto, cantidad) => {
     if (!Number.isInteger(cantidad) || cantidad <= 0) {
-      alert('La cantidad seleccionada no es válida.')
+      toast.error('La cantidad seleccionada no es válida.')
       return
     }
 
     const cantidadActual = getCantidadActual(producto.id)
 
     if (cantidadActual + cantidad > producto.stock) {
-      alert('No hay suficiente stock disponible.')
+      toast.error('No hay suficiente stock disponible.')
       return
     }
 
@@ -144,16 +145,21 @@ function CartProvider({ children }) {
         }
       ]
     })
+    toast.success(`${producto.nombre} agregado al carrito.`)
   }
 
   const eliminarDelCarrito = (id) => {
+    if (!carrito.some((item) => item.id === id)) return
+    toast.info('Producto eliminado del carrito.')
     setCarrito((carritoAnterior) =>
       carritoAnterior.filter((item) => item.id !== id)
     )
   }
 
-  const vaciarCarrito = () => {
+  const vaciarCarrito = (notificar = true) => {
+    if (carrito.length === 0) return
     setCarrito([])
+    if (notificar) toast.info('Carrito vaciado correctamente.')
   }
 
   const cantidadTotal = carrito.reduce(

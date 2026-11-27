@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -22,6 +23,7 @@ function Perfil() {
 
     try {
       await logout()
+      toast.info('Sesión cerrada correctamente.')
       navigate('/', { replace: true })
     } catch (error) {
       setError(obtenerMensajeError(error))

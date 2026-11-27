@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { useContext, useState } from 'react'
 import {
   Link,
@@ -51,6 +52,7 @@ function Login() {
 
     try {
       await login(email, password)
+      toast.success('Credenciales verificadas correctamente.')
     } catch (error) {
       setError(obtenerMensajeError(error))
     } finally {

@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { useEffect, useState } from 'react'
 
 import FormularioProducto from '../FormularioProducto/FormularioProducto'
@@ -29,7 +30,6 @@ const GestionProductos = () => {
   const [cargando, setCargando] = useState(true)
   const [recarga, setRecarga] = useState(0)
   const [error, setError] = useState('')
-  const [mensaje, setMensaje] = useState('')
 
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [productoEditar, setProductoEditar] = useState(null)
@@ -75,14 +75,12 @@ const GestionProductos = () => {
   const abrirNuevoProducto = () => {
     setProductoEditar(null)
     setErrorFormulario('')
-    setMensaje('')
     setMostrarFormulario(true)
   }
 
   const abrirEdicion = (producto) => {
     setProductoEditar(producto)
     setErrorFormulario('')
-    setMensaje('')
     setMostrarFormulario(true)
   }
 
@@ -115,7 +113,7 @@ const GestionProductos = () => {
           )
         )
 
-        setMensaje('Producto actualizado correctamente.')
+        toast.success('Producto actualizado correctamente.')
       } else {
         const nuevo = await crearProducto(datos)
 
@@ -123,7 +121,7 @@ const GestionProductos = () => {
           ordenarProductos([...anteriores, nuevo])
         )
 
-        setMensaje('Producto creado correctamente.')
+        toast.success('Producto creado correctamente.')
       }
 
       setMostrarFormulario(false)
@@ -140,7 +138,6 @@ const GestionProductos = () => {
   const abrirEliminacion = (producto) => {
     setProductoEliminar(producto)
     setErrorEliminacion('')
-    setMensaje('')
   }
 
   const cancelarEliminacion = () => {
@@ -166,7 +163,7 @@ const GestionProductos = () => {
       )
 
       setProductoEliminar(null)
-      setMensaje('Producto eliminado correctamente.')
+      toast.success('Producto eliminado correctamente.')
     } catch (errorBorrado) {
       setErrorEliminacion(
         obtenerMensajeErrorProducto(errorBorrado)
@@ -211,20 +208,6 @@ const GestionProductos = () => {
           </button>
         )}
       </header>
-
-      {mensaje && (
-        <div className="gestion-alerta exito" role="status">
-          <span>{mensaje}</span>
-
-          <button
-            type="button"
-            onClick={() => setMensaje('')}
-            aria-label="Cerrar notificación"
-          >
-            ×
-          </button>
-        </div>
-      )}
 
       {cargando ? (
         <div className="gestion-estado" role="status">

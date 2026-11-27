@@ -1466,4 +1466,76 @@ body {
   }
 }
 
+/* ========================================
+   INTEGRACIÓN DE LIBRERÍAS
+======================================== */
 
+.nav-list a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.nav-list a svg {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.inicio-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.inicio-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inicio-icono svg {
+  width: 1em;
+  height: 1em;
+}
+
+.catalogo-bootstrap {
+  padding-right: 0;
+  padding-left: 0;
+  width: 100%;
+}
+
+.catalogo-columna {
+  display: flex;
+  min-width: 0;
+}
+
+.catalogo-columna .producto-card {
+  width: 100%;
+  height: 100%;
+}
+
+.producto-boton svg {
+  flex-shrink: 0;
+}
+
+.Toastify__toast {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  border-radius: 12px;
+}
+
+@media (max-width: 576px) {
+  .nav-list a {
+    gap: 5px;
+  }
+
+  .nav-list a svg {
+    font-size: 16px;
+  }
+
+  .Toastify__toast-container {
+    max-width: 100%;
+  }
+}

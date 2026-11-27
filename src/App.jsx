@@ -2,9 +2,11 @@ import './App.css'
 
 import { lazy, Suspense } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
+import { FiMonitor, FiArrowRight } from 'react-icons/fi'
 
 import Layout from './componentes/Layout/Layout'
 import ProtectedRoute from './componentes/ProtectedRoute/ProtectedRoute'
+import SEO from './componentes/SEO/SEO'
 
 const ItemListContainer = lazy(() =>
   import('./componentes/ItemListContainer/ItemListContainer')
@@ -39,7 +41,11 @@ function App() {
     <Suspense
       fallback={
         <section className="auth-estado" role="status">
-          <div className="auth-spinner" />
+          <div
+            className="auth-spinner"
+            aria-hidden="true"
+          />
+
           <p>Cargando página...</p>
         </section>
       }
@@ -49,49 +55,65 @@ function App() {
           <Route
             path="/"
             element={
-              <section className="inicio">
-                <div className="inicio-contenido">
-                  <span className="inicio-label">
-                    TECH STORE
-                  </span>
+              <>
+                <SEO
+                  descripcion="Encontrá notebooks, smartphones, consolas, accesorios y mucho más en Tech Store."
+                />
 
-                  <h2>
-                    Tecnología para tu día a día
-                  </h2>
+                <section className="inicio">
+                  <div className="inicio-contenido">
+                    <span className="inicio-label">
+                      TECH STORE
+                    </span>
 
-                  <p>
-                    Encontrá notebooks, smartphones,
-                    consolas, accesorios y mucho más
-                    en un solo lugar.
-                  </p>
+                    <h2>
+                      Tecnología para tu día a día
+                    </h2>
 
-                  <Link
-                    className="inicio-boton"
-                    to="/productos"
-                  >
-                    Ver productos
-                  </Link>
-                </div>
+                    <p>
+                      Encontrá notebooks, smartphones,
+                      consolas, accesorios y mucho más
+                      en un solo lugar.
+                    </p>
 
-                <div className="inicio-visual">
-                  <div className="inicio-icono">
-                    💻
+                    <Link
+                      className="inicio-boton"
+                      to="/productos"
+                    >
+                      Ver productos{' '}
+                      <FiArrowRight aria-hidden="true" />
+                    </Link>
                   </div>
 
-                  <h3>Todo en tecnología</h3>
+                  <div className="inicio-visual">
+                    <div className="inicio-icono">
+                      <FiMonitor aria-hidden="true" />
+                    </div>
 
-                  <p>
-                    Productos seleccionados para trabajar,
-                    estudiar y disfrutar.
-                  </p>
-                </div>
-              </section>
+                    <h3>Todo en tecnología</h3>
+
+                    <p>
+                      Productos seleccionados para trabajar,
+                      estudiar y disfrutar.
+                    </p>
+                  </div>
+                </section>
+              </>
             }
           />
 
           <Route
             path="/productos"
-            element={<ItemListContainer />}
+            element={
+              <>
+                <SEO
+                  titulo="Productos"
+                  descripcion="Explorá nuestro catálogo de productos tecnológicos."
+                />
+
+                <ItemListContainer />
+              </>
+            }
           />
 
           <Route
@@ -101,17 +123,44 @@ function App() {
 
           <Route
             path="/carrito"
-            element={<Cart />}
+            element={
+              <>
+                <SEO
+                  titulo="Mi carrito"
+                  privado
+                />
+
+                <Cart />
+              </>
+            }
           />
 
           <Route
             path="/login"
-            element={<Login />}
+            element={
+              <>
+                <SEO
+                  titulo="Iniciar sesión"
+                  privado
+                />
+
+                <Login />
+              </>
+            }
           />
 
           <Route
             path="/registro"
-            element={<Registro />}
+            element={
+              <>
+                <SEO
+                  titulo="Crear cuenta"
+                  privado
+                />
+
+                <Registro />
+              </>
+            }
           />
 
           <Route
@@ -121,7 +170,16 @@ function App() {
           >
             <Route
               path="/perfil"
-              element={<Perfil />}
+              element={
+                <>
+                  <SEO
+                    titulo="Mi perfil"
+                    privado
+                  />
+
+                  <Perfil />
+                </>
+              }
             />
           </Route>
 
@@ -132,22 +190,38 @@ function App() {
           >
             <Route
               path="/gestion"
-              element={<GestionProductos />}
+              element={
+                <>
+                  <SEO
+                    titulo="Administración de productos"
+                    privado
+                  />
+
+                  <GestionProductos />
+                </>
+              }
             />
           </Route>
 
           <Route
             path="*"
             element={
-              <section className="auth-estado">
-                <h2>Página no encontrada</h2>
+              <>
+                <SEO
+                  titulo="Página no encontrada"
+                  privado
+                />
 
-                <p>
-                  La página que buscas no existe.
-                </p>
+                <section className="auth-estado">
+                  <h2>Página no encontrada</h2>
 
-                <Link to="/">Volver al inicio</Link>
-              </section>
+                  <p>
+                    La página que buscas no existe.
+                  </p>
+
+                  <Link to="/">Volver al inicio</Link>
+                </section>
+              </>
             }
           />
         </Route>

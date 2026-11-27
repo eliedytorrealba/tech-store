@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { FiArrowLeft } from 'react-icons/fi'
 import { CartContext } from '../../context/CartContext'
 import ItemCount from '../ItemCount/ItemCount'
 
@@ -23,7 +24,7 @@ function ItemDetail({ producto }) {
         className="volver-productos"
         to="/productos"
       >
-        ← Volver a productos
+        <FiArrowLeft aria-hidden="true" /> Volver a productos
       </Link>
 
       <div className="detalle-card">

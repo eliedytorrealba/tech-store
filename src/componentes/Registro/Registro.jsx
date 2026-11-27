@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { useContext, useState } from 'react'
 import {
   Link,
@@ -87,6 +88,7 @@ function Registro() {
         email.trim(),
         password
       )
+      toast.success('Cuenta creada correctamente.')
     } catch (error) {
       setError(obtenerMensajeError(error))
     } finally {
