@@ -1,4 +1,3 @@
-
 # Tech Store
 
 ## Proyecto final - Curso de React JS
@@ -8,6 +7,16 @@ Tech Store es una aplicación web de comercio electrónico orientada a la venta 
 La aplicación permite explorar un catálogo de productos, realizar búsquedas en tiempo real, consultar detalles, gestionar un carrito de compras, registrar usuarios e iniciar sesión.
 
 También cuenta con un panel de administración que permite gestionar los productos mediante operaciones CRUD, con autenticación, autorización basada en roles y reglas de seguridad en Cloud Firestore.
+
+---
+
+## Demo en producción
+
+- **Aplicación publicada:** [Tech Store — Netlify](https://tech-store-eliedy.netlify.app)
+- **Repositorio:** [GitHub — Tech Store](https://github.com/eliedytorrealba/tech-store)
+- **Estado:** publicado y validado mediante pruebas funcionales en producción.
+
+El proyecto está vinculado a GitHub para realizar despliegues continuos desde la rama `main`.
 
 ---
 
@@ -136,6 +145,7 @@ Panel de administración disponible exclusivamente para usuarios con rol adminis
 | ESLint | Análisis estático de código |
 | Git y GitHub | Control de versiones |
 | Lighthouse | Auditorías de calidad web |
+| Netlify | Alojamiento web y despliegue continuo |
 
 Se utiliza React Helmet Async como alternativa a React Helmet para mantener la compatibilidad con React 19.
 
@@ -241,6 +251,7 @@ tech-store/
 ├── firebase.json
 ├── firestore.rules
 ├── index.html
+├── netlify.toml
 ├── package.json
 ├── package-lock.json
 ├── vite.config.js
@@ -256,6 +267,7 @@ tech-store/
 - `public/`: recursos estáticos e imágenes optimizadas.
 - `scripts/`: herramientas auxiliares de optimización.
 - `firestore.rules`: reglas de seguridad de Cloud Firestore.
+- `netlify.toml`: configuración de compilación, publicación y redirecciones SPA en Netlify.
 
 El archivo `public/productos.json` se conserva como respaldo y referencia para la carga inicial de productos. La fuente principal de datos de la aplicación es Cloud Firestore.
 
@@ -500,7 +512,60 @@ Abrir en el navegador:
 
 http://localhost:4173/
 
-Para un futuro despliegue, el servidor de alojamiento deberá estar configurado para redirigir las rutas de la SPA hacia `index.html`.
+En Netlify, las redirecciones de la SPA hacia `index.html` se encuentran configuradas en `netlify.toml` y permiten recargar directamente las rutas de React Router DOM sin errores 404 del servidor.
+
+---
+
+## Despliegue en producción
+
+Tech Store fue publicado en Netlify el 28/11/2026.
+
+**URL pública:** https://tech-store-eliedy.netlify.app
+
+### Configuración del despliegue
+
+| Parámetro | Configuración |
+|---|---|
+| Plataforma | Netlify |
+| Rama de producción | `main` |
+| Node.js | 22.17.1 (configurado) |
+| Comando de compilación | `npm run build` |
+| Directorio de publicación | `dist` |
+| Archivo de configuración | `netlify.toml` |
+| Protocolo | HTTPS |
+| Despliegue continuo | Integración con GitHub |
+| Variables de entorno | Configuradas en Netlify |
+| Dominio autorizado en Firebase | `tech-store-eliedy.netlify.app` |
+
+### Configuración de Netlify
+
+```toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22.17.1"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+### Pasos para reproducir el despliegue
+
+1. Importar el repositorio desde GitHub en Netlify.
+2. Seleccionar la rama `main`.
+3. Verificar el comando de compilación y el directorio de publicación.
+4. Configurar las seis variables `VITE_FIREBASE_*` descritas en la sección de instalación, utilizando los valores de la aplicación web de Firebase.
+5. Ejecutar el despliegue y verificar que finalice correctamente.
+6. Agregar el dominio asignado por Netlify en Firebase Authentication, dentro de Configuración > Dominios autorizados.
+7. Validar la navegación, la conexión con Firestore, la autenticación y las rutas protegidas en la URL pública.
+
+Las variables de configuración web se incorporan durante el build. Si se modifican en Netlify, se debe generar un nuevo despliegue. No se deben incluir contraseñas ni claves privadas en variables `VITE_`.
+
+El despliegue del frontend no sustituye la publicación de las reglas de seguridad de Firestore, que se administran por separado en Firebase.
 
 ---
 
@@ -602,6 +667,8 @@ Fecha de ejecución: 27/11/2026.
 
 **96,13 / 100**
 
+Este valor es el promedio aritmético de las cuatro categorías de las auditorías realizadas; no constituye una puntuación global oficial de Lighthouse.
+
 Las cuatro auditorías se completaron correctamente.
 
 Los resultados corresponden al entorno de producción local y pueden variar según el dispositivo, la conexión, el navegador y el entorno de despliegue.
@@ -659,6 +726,36 @@ Los resultados corresponden a escenarios de prueba manuales y verificaciones dir
 | Auditorías Lighthouse | 4/4 completadas |
 | Advertencias de tamaño de chunks | 0 |
 
+### QA final local
+
+Se completaron los escenarios FINAL-01 a FINAL-12, incluyendo navegación, catálogo, detalle, carrito, autenticación, administración, diseño responsive, consola y comprobaciones en Chrome, Edge y Firefox.
+
+**Resultado: 12/12 PASS.**
+
+### Smoke Test en producción — Netlify
+
+Fecha de ejecución: 28/11/2026.
+
+| ID | Escenario | Resultado |
+|---|---|---|
+| PROD-01 | Carga de inicio | PASS |
+| PROD-02 | Catálogo y conexión con Firestore | PASS |
+| PROD-03 | Visualización de imágenes | PASS |
+| PROD-04 | Buscador y paginación | PASS |
+| PROD-05 | Detalle de productos | PASS |
+| PROD-06 | Incorporación y eliminación de productos del carrito | PASS |
+| PROD-07 | Persistencia del carrito | PASS |
+| PROD-08 | Autenticación cliente | PASS |
+| PROD-09 | Autenticación administrador | PASS |
+| PROD-10 | Panel administrativo | PASS |
+| PROD-11 | Redirecciones SPA y recarga de rutas | PASS |
+| PROD-12 | Diseño responsive | PASS |
+| PROD-13 | Consola del navegador | PASS |
+
+**Resultado: 13/13 PASS (100 %).**
+
+No se identificaron defectos bloqueantes en los escenarios ejecutados en producción. Los resultados corresponden a pruebas manuales y no implican cobertura exhaustiva de todos los casos posibles.
+
 ---
 
 ## Limitaciones y oportunidades de mejora
@@ -688,9 +785,11 @@ El carrito se almacena localmente en el navegador y puede conservar datos de pro
 
 ---
 
-## Repositorio
+## Repositorio y aplicación publicada
 
-https://github.com/eliedytorrealba/tech-store
+- **Código fuente:** https://github.com/eliedytorrealba/tech-store
+- **Demo en producción:** https://tech-store-eliedy.netlify.app
+- **Rama de producción:** `main`
 
 ---
 
